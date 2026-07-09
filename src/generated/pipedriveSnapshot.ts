@@ -2,7 +2,7 @@
 import type { Dashboard } from '../data';
 
 export const pipedriveSnapshot = {
-  "generatedAt": "2026-07-09T14:03:42",
+  "generatedAt": "2026-07-09T14:04:28",
   "periodLabel": "Jul/2026",
   "source": "Pipedrive API — dados agregados",
   "rawCounts": {
@@ -201,7 +201,7 @@ export const pipedriveSnapshot = {
       "ranking": [
         {
           "label": "Feedback Proposta",
-          "value": 143,
+          "value": 144,
           "color": "#ff7a1a"
         },
         {
@@ -240,7 +240,7 @@ export const pipedriveSnapshot = {
           "id": "reunioes",
           "label": "Reuniões agendadas",
           "unit": "count",
-          "value": 35.0,
+          "value": 36.0,
           "points": [
             {
               "month": "Jan/26",
@@ -268,7 +268,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jul/26",
-              "value": 35.0
+              "value": 36.0
             }
           ],
           "objective": "Deals criados no mês que estão em Reunião Agendada ou etapa posterior."
@@ -277,7 +277,7 @@ export const pipedriveSnapshot = {
           "id": "propostas",
           "label": "Propostas enviadas",
           "unit": "count",
-          "value": 26.0,
+          "value": 27.0,
           "points": [
             {
               "month": "Jan/26",
@@ -305,7 +305,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jul/26",
-              "value": 26.0
+              "value": 27.0
             }
           ],
           "objective": "Deals criados no mês que estão em Enviar Proposta ou etapa posterior."
@@ -351,7 +351,7 @@ export const pipedriveSnapshot = {
           "id": "conversao-venda",
           "label": "Conversão reunião → pago",
           "unit": "percent",
-          "value": 45.71,
+          "value": 44.44,
           "points": [
             {
               "month": "Jan/26",
@@ -379,7 +379,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jul/26",
-              "value": 45.71
+              "value": 44.44
             }
           ],
           "objective": "Contratos pagos divididos por reuniões agendadas."
@@ -394,7 +394,7 @@ export const pipedriveSnapshot = {
         },
         {
           "label": "Feedback Proposta",
-          "value": 143,
+          "value": 144,
           "color": "#ffd166"
         },
         {
