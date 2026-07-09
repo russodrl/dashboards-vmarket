@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { Activity, BarChart3, CheckCircle2, Download, Link2, Search, TrendingDown, TrendingUp } from 'lucide-react';
+import React, { useState } from 'react';
+import { Activity, BarChart3, CheckCircle2, Download, TrendingDown, TrendingUp } from 'lucide-react';
 import { formatValue, Indicator, MonthPoint, variation } from './data';
 import { dashboards, pipedriveSnapshot } from './generated/pipedriveSnapshot';
-import { exportDashboardSchema, linkSalesToOnboarding, RawDeal } from './pipedriveLinking';
+import { exportDashboardSchema } from './pipedriveLinking';
 import './styles.css';
 
 function pct(points: MonthPoint[], index: number) {
@@ -89,42 +89,6 @@ function Bars({ items }: { items: { label: string; value: number; color: string 
   return <div className="bars">{items.map((item) => <div className="barRow" key={item.label}><span>{item.label}</span><div><i style={{ width: `${(item.value / max) * 100}%`, background: item.color }} /></div><b>{item.value}</b></div>)}</div>;
 }
 
-function UploadDemo() {
-  const [result, setResult] = useState('Use CNPJ principal para match. Se não encontrar, tenta título removendo “(copia)”.');
-  const example = useMemo(() => {
-    const sales: RawDeal[] = [
-      { id: 1, title: 'ACME Ltda', cnpj_principal: '12.345.678/0001-90', value: 9800 },
-      { id: 2, title: 'Loja Sol', cnpj_principal: '', value: 7200 },
-    ];
-    const copies: RawDeal[] = [
-      { id: 11, title: 'ACME Ltda (copia)', cnpj_principal: '12.345.678/0001-90' },
-      { id: 12, title: 'Loja Sol (copia)' },
-    ];
-    return linkSalesToOnboarding(sales, copies);
-  }, []);
-
-  async function handleFile(file?: File) {
-    if (!file) return;
-    const text = await file.text();
-    try {
-      const json = JSON.parse(text) as { salesDeals?: RawDeal[]; onboardingCopies?: RawDeal[] };
-      const linked = linkSalesToOnboarding(json.salesDeals ?? [], json.onboardingCopies ?? []);
-      const matched = linked.filter((l) => l.salesDeal).length;
-      setResult(`${matched}/${linked.length} cópias vinculadas. Métodos: ${linked.map((l) => l.matchMethod).join(', ')}`);
-    } catch {
-      setResult('Arquivo precisa ser JSON: { "salesDeals": [...], "onboardingCopies": [...] }');
-    }
-  }
-
-  return (
-    <section className="panel linkPanel">
-      <div><h2><Link2 size={22} /> Vínculo venda → onboarding</h2><p>Regra implementada no app: CNPJ principal primeiro; fallback pelo título contendo “(copia)”.</p></div>
-      <label className="fileButton"><Search size={16} /> Testar JSON <input type="file" accept="application/json" onChange={(e) => handleFile(e.target.files?.[0])} /></label>
-      <div className="matchResult">{result}</div>
-      <pre>{JSON.stringify(example, null, 2)}</pre>
-    </section>
-  );
-}
 
 export default function App() {
   const [active, setActive] = useState(dashboards[0].id);
@@ -162,7 +126,6 @@ export default function App() {
         <article className="panel notes"><h2><CheckCircle2 size={22} /> Recomendações</h2>{dashboard.notes.map((note) => <p key={note}>{note}</p>)}</article>
       </section>
 
-      <UploadDemo />
     </main>
   );
 }
