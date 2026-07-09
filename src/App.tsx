@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Activity, BarChart3, CheckCircle2, Download, Link2, Search, TrendingDown, TrendingUp } from 'lucide-react';
-import { dashboards, formatValue, Indicator, MonthPoint, variation } from './data';
+import { formatValue, Indicator, MonthPoint, variation } from './data';
+import { dashboards, pipedriveSnapshot } from './generated/pipedriveSnapshot';
 import { exportDashboardSchema, linkSalesToOnboarding, RawDeal } from './pipedriveLinking';
 import './styles.css';
 
@@ -149,8 +150,8 @@ export default function App() {
       </header>
 
       <section className="hero" style={{ '--accent': dashboard.accent } as React.CSSProperties}>
-        <div><small>Julho/2026 · mês vigente</small><h1>{dashboard.title}</h1><p>{dashboard.subtitle}</p></div>
-        <div className="heroBadge"><Activity size={18} /> Atualizado em tempo real quando ligado ao Pipedrive</div>
+        <div><small>{pipedriveSnapshot.periodLabel} · snapshot Pipedrive</small><h1>{dashboard.title}</h1><p>{dashboard.subtitle}</p></div>
+        <div className="heroBadge"><Activity size={18} /> Atualizado em {new Date(pipedriveSnapshot.generatedAt).toLocaleString('pt-BR')} · {pipedriveSnapshot.rawCounts.deals.toLocaleString('pt-BR')} deals</div>
       </section>
 
       <section className="grid indicators">{dashboard.indicators.map((indicator) => <IndicatorCard key={indicator.id} indicator={indicator} />)}</section>
