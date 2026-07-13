@@ -146,12 +146,6 @@ const sourceDocs: Record<string, SourceDoc[]> = {
 
 function SourceGuide({ dashboardId }: { dashboardId: string }) {
   const docs = sourceDocs[dashboardId] ?? [];
-  const currentDashboard = dashboards.find((item) => item.id === dashboardId);
-  const titleFor = (doc: SourceDoc) => {
-    if (doc.id.startsWith('mix:')) return currentDashboard?.mixTitle ?? doc.id.replace('mix:', '');
-    if (doc.id.startsWith('ranking:')) return currentDashboard?.rankingTitle ?? doc.id.replace('ranking:', '');
-    return currentDashboard?.indicators.find((indicator) => indicator.id === doc.id)?.label ?? doc.id;
-  };
   return (
     <section className="sourceGuide">
       <div className="sourceIntro">
@@ -163,7 +157,7 @@ function SourceGuide({ dashboardId }: { dashboardId: string }) {
         {docs.map((doc) => (
           <article className="sourceCard" key={doc.id}>
             <span>{doc.id.includes(':') ? 'Gráfico' : 'KPI'}</span>
-            <h3>{titleFor(doc)}</h3>
+            <h3>{doc.id.replace('mix:', '').replace('ranking:', '')}</h3>
             <p><strong>Fórmula:</strong> {doc.formula}</p>
             <p><strong>Campos:</strong> {doc.fields.join(', ')}</p>
             <p><strong>Filtros:</strong> {doc.filters.join(' · ')}</p>
