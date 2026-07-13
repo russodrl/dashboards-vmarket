@@ -2,7 +2,7 @@
 import type { Dashboard } from '../data';
 
 export const pipedriveSnapshot = {
-  "generatedAt": "2026-07-13T11:34:15",
+  "generatedAt": "2026-07-13T12:17:11",
   "periodLabel": "Jul/2026",
   "source": "Pipedrive API — dados agregados",
   "rawCounts": {
@@ -22,7 +22,7 @@ export const pipedriveSnapshot = {
       "indicators": [
         {
           "id": "receita-ganha",
-          "label": "Receita vendida paga",
+          "label": "Negócios Ganhos - Receita Ganha",
           "unit": "currency",
           "value": 11483.12,
           "points": [
@@ -58,8 +58,8 @@ export const pipedriveSnapshot = {
           "objective": "Soma de negócios ganhos no Pipeline de Vendas pelo won_time."
         },
         {
-          "id": "clientes-pagos",
-          "label": "Novos clientes pagos",
+          "id": "contratos-ganhos",
+          "label": "Negócios Ganhos - Contratos Ganhos",
           "unit": "count",
           "value": 19.0,
           "points": [
@@ -95,10 +95,121 @@ export const pipedriveSnapshot = {
           "objective": "Quantidade de negócios ganhos no Pipeline de Vendas."
         },
         {
-          "id": "taxa-ativacao",
-          "label": "Taxa de ativação",
-          "unit": "percent",
-          "value": 100.0,
+          "id": "cnpjs-ganhos",
+          "label": "Negócios Ganhos - CNPJs",
+          "unit": "count",
+          "value": 33.0,
+          "points": [
+            {
+              "month": "Jan/26",
+              "value": 82.0
+            },
+            {
+              "month": "Fev/26",
+              "value": 126.0
+            },
+            {
+              "month": "Mar/26",
+              "value": 136.0
+            },
+            {
+              "month": "Abr/26",
+              "value": 120.0
+            },
+            {
+              "month": "Mai/26",
+              "value": 103.0
+            },
+            {
+              "month": "Jun/26",
+              "value": 89.0
+            },
+            {
+              "month": "Jul/26",
+              "value": 33.0
+            }
+          ],
+          "objective": "Soma do campo Quantidade de CNPJs dos negócios ganhos."
+        },
+        {
+          "id": "receita-cancelada",
+          "label": "Negócios Cancelados - Receita Perdida",
+          "unit": "currency",
+          "value": 19825.56,
+          "points": [
+            {
+              "month": "Jan/26",
+              "value": 5870.0
+            },
+            {
+              "month": "Fev/26",
+              "value": 6495.02
+            },
+            {
+              "month": "Mar/26",
+              "value": 10140.7
+            },
+            {
+              "month": "Abr/26",
+              "value": 9767.28
+            },
+            {
+              "month": "Mai/26",
+              "value": 10122.42
+            },
+            {
+              "month": "Jun/26",
+              "value": 8994.15
+            },
+            {
+              "month": "Jul/26",
+              "value": 19825.56
+            }
+          ],
+          "objective": "Soma do valor dos negócios movidos para etapa Cancelado/Cancelados pelo stage_change_time."
+        },
+        {
+          "id": "contratos-cancelados",
+          "label": "Negócios Cancelados - Contratos Perdidos",
+          "unit": "count",
+          "value": 40.0,
+          "points": [
+            {
+              "month": "Jan/26",
+              "value": 10.0
+            },
+            {
+              "month": "Fev/26",
+              "value": 13.0
+            },
+            {
+              "month": "Mar/26",
+              "value": 22.0
+            },
+            {
+              "month": "Abr/26",
+              "value": 26.0
+            },
+            {
+              "month": "Mai/26",
+              "value": 21.0
+            },
+            {
+              "month": "Jun/26",
+              "value": 22.0
+            },
+            {
+              "month": "Jul/26",
+              "value": 40.0
+            }
+          ],
+          "objective": "Quantidade de negócios movidos para etapa Cancelado/Cancelados."
+        },
+        {
+          "id": "cnpjs-cancelados",
+          "label": "Negócios Cancelados - CNPJs",
+          "unit": "count",
+          "value": 68.0,
           "points": [
             {
               "month": "Jan/26",
@@ -106,67 +217,252 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Fev/26",
-              "value": 50.0
+              "value": 19.0
             },
             {
               "month": "Mar/26",
-              "value": 26.32
+              "value": 27.0
             },
             {
               "month": "Abr/26",
-              "value": 37.5
+              "value": 34.0
             },
             {
               "month": "Mai/26",
-              "value": 45.71
+              "value": 30.0
             },
             {
               "month": "Jun/26",
-              "value": 94.12
+              "value": 32.0
             },
             {
               "month": "Jul/26",
-              "value": 100.0
+              "value": 68.0
             }
           ],
-          "objective": "Ativações em onboarding divididas por clientes recebidos no mês."
+          "objective": "Soma do campo Quantidade de CNPJs dos negócios cancelados."
         },
         {
-          "id": "deals-abertos",
-          "label": "Negócios abertos",
-          "unit": "count",
-          "value": 3753.0,
+          "id": "receita-liquida",
+          "label": "Vendas Líquidas - Valor",
+          "unit": "currency",
+          "value": -8342.44,
           "points": [
             {
               "month": "Jan/26",
-              "value": 0
+              "value": 22827.78
             },
             {
               "month": "Fev/26",
-              "value": 0
+              "value": 31609.8
             },
             {
               "month": "Mar/26",
-              "value": 0
+              "value": 28601.72
             },
             {
               "month": "Abr/26",
-              "value": 0
+              "value": 43484.38
             },
             {
               "month": "Mai/26",
-              "value": 0
+              "value": 30064.79
             },
             {
               "month": "Jun/26",
-              "value": 0
+              "value": 23624.86
             },
             {
               "month": "Jul/26",
-              "value": 3753
+              "value": -8342.44
             }
           ],
-          "objective": "Carteira aberta atual em todos os funis monitorados."
+          "objective": "Receita ganha menos receita perdida por cancelamentos."
+        },
+        {
+          "id": "contratos-liquidos",
+          "label": "Vendas Líquidas - Contratos",
+          "unit": "count",
+          "value": -21.0,
+          "points": [
+            {
+              "month": "Jan/26",
+              "value": 42.0
+            },
+            {
+              "month": "Fev/26",
+              "value": 70.0
+            },
+            {
+              "month": "Mar/26",
+              "value": 53.0
+            },
+            {
+              "month": "Abr/26",
+              "value": 40.0
+            },
+            {
+              "month": "Mai/26",
+              "value": 49.0
+            },
+            {
+              "month": "Jun/26",
+              "value": 34.0
+            },
+            {
+              "month": "Jul/26",
+              "value": -21.0
+            }
+          ],
+          "objective": "Contratos ganhos menos contratos cancelados."
+        },
+        {
+          "id": "cnpjs-liquidos",
+          "label": "Vendas Líquidas - CNPJs",
+          "unit": "count",
+          "value": -35.0,
+          "points": [
+            {
+              "month": "Jan/26",
+              "value": 62.0
+            },
+            {
+              "month": "Fev/26",
+              "value": 107.0
+            },
+            {
+              "month": "Mar/26",
+              "value": 109.0
+            },
+            {
+              "month": "Abr/26",
+              "value": 86.0
+            },
+            {
+              "month": "Mai/26",
+              "value": 73.0
+            },
+            {
+              "month": "Jun/26",
+              "value": 57.0
+            },
+            {
+              "month": "Jul/26",
+              "value": -35.0
+            }
+          ],
+          "objective": "CNPJs ganhos menos CNPJs cancelados."
+        },
+        {
+          "id": "novos-leads",
+          "label": "Novos Negócios - Novos Leads",
+          "unit": "count",
+          "value": 210.0,
+          "points": [
+            {
+              "month": "Jan/26",
+              "value": 320.0
+            },
+            {
+              "month": "Fev/26",
+              "value": 410.0
+            },
+            {
+              "month": "Mar/26",
+              "value": 400.0
+            },
+            {
+              "month": "Abr/26",
+              "value": 362.0
+            },
+            {
+              "month": "Mai/26",
+              "value": 319.0
+            },
+            {
+              "month": "Jun/26",
+              "value": 323.0
+            },
+            {
+              "month": "Jul/26",
+              "value": 210.0
+            }
+          ],
+          "objective": "Leads novos criados no Pipeline de Vendas."
+        },
+        {
+          "id": "leads-qualificados",
+          "label": "Novos Negócios - Leads Qualificados",
+          "unit": "count",
+          "value": 37.0,
+          "points": [
+            {
+              "month": "Jan/26",
+              "value": 146.0
+            },
+            {
+              "month": "Fev/26",
+              "value": 175.0
+            },
+            {
+              "month": "Mar/26",
+              "value": 147.0
+            },
+            {
+              "month": "Abr/26",
+              "value": 180.0
+            },
+            {
+              "month": "Mai/26",
+              "value": 132.0
+            },
+            {
+              "month": "Jun/26",
+              "value": 110.0
+            },
+            {
+              "month": "Jul/26",
+              "value": 37.0
+            }
+          ],
+          "objective": "Leads com valor acima de R$50 mil, mais de 1 CNPJ ou reunião realizada."
+        },
+        {
+          "id": "conversao-novos",
+          "label": "Novos Negócios - Percentual de Conversão",
+          "unit": "percent",
+          "value": 9.05,
+          "points": [
+            {
+              "month": "Jan/26",
+              "value": 16.25
+            },
+            {
+              "month": "Fev/26",
+              "value": 20.24
+            },
+            {
+              "month": "Mar/26",
+              "value": 18.75
+            },
+            {
+              "month": "Abr/26",
+              "value": 18.23
+            },
+            {
+              "month": "Mai/26",
+              "value": 21.94
+            },
+            {
+              "month": "Jun/26",
+              "value": 17.34
+            },
+            {
+              "month": "Jul/26",
+              "value": 9.05
+            }
+          ],
+          "objective": "Negócios fechados divididos por novos leads do mês."
         }
       ],
       "mixTitle": "Distribuição atual por funil",
@@ -226,7 +522,8 @@ export const pipedriveSnapshot = {
         }
       ],
       "notes": [
-        "Snapshot estático gerado a partir da API do Pipedrive; nenhum token fica no navegador.",
+        "Todos os cards executivos mostram evolução mensal.",
+        "Cancelamentos usam a data stage_change_time quando o negócio está em etapa Cancelado/Cancelados.",
         "Vínculo venda→onboarding: 171 por CNPJ, 25 por título, 19 sem match."
       ]
     },

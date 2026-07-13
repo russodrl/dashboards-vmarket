@@ -134,6 +134,40 @@ def safe_ratio(num: float, den: float) -> float:
     return (num / den * 100) if den else 0.0
 
 
+def numeric_field(deal: dict[str, Any], key: str, default: float = 0.0) -> float:
+    value = deal.get(key)
+    if value in (None, ""):
+        return default
+    if isinstance(value, (int, float)):
+        return float(value)
+    match = re.search(r"-?\d+(?:[,.]\d+)?", str(value))
+    if not match:
+        return default
+    try:
+        return float(match.group(0).replace(",", "."))
+    except ValueError:
+        return default
+
+
+def sum_field_by_month(deals: list[dict[str, Any]], field_key: str, date_field: str, keys: list[str], default_per_deal: float = 0.0) -> dict[str, float]:
+    acc = defaultdict(float)
+    keyset = set(keys)
+    for d in deals:
+        mk = month_key(parse_dt(d.get(date_field)))
+        if mk in keyset:
+            acc[mk] += numeric_field(d, field_key, default_per_deal)
+    return acc
+
+
+def subtract_by_month(left: dict[str, float], right: dict[str, float], keys: list[str]) -> dict[str, float]:
+    return {k: float(left.get(k, 0)) - float(right.get(k, 0)) for k in keys}
+
+
+def is_cancelled_stage(deal: dict[str, Any], stage_by_id: dict[int, dict[str, Any]]) -> bool:
+    name = stage_name(deal.get("stage_id"), stage_by_id).lower()
+    return "cancelad" in name
+
+
 def owner_name(deal: dict[str, Any]) -> str:
     user = deal.get("user_id")
     if isinstance(user, dict):
@@ -199,27 +233,47 @@ def main() -> None:
     onboarding = [d for d in deals if d.get("pipeline_id") == PIPELINES["onboarding"]]
     cs = [d for d in deals if d.get("pipeline_id") == PIPELINES["cs"]]
     won_sales = [d for d in sales if d.get("status") == "won"]
+    cnpj_qty_key = "e0b823836d4ff5ebe397824d7f0170cd6817ec0a"
+    cancelled_deals = [d for d in deals if is_cancelled_stage(d, stage_by_id)]
 
     # Commercial metrics.
     sales_revenue = money_sum(won_sales, "won_time", keys)
     paid_clients = count_by_month(won_sales, "won_time", keys)
+    won_cnpjs = sum_field_by_month(won_sales, cnpj_qty_key, "won_time", keys, default_per_deal=1)
+    new_sales_leads = count_by_month(sales, "add_time", keys)
+    cancelled_revenue = money_sum(cancelled_deals, "stage_change_time", keys)
+    cancelled_contracts = count_by_month(cancelled_deals, "stage_change_time", keys)
+    cancelled_cnpjs = sum_field_by_month(cancelled_deals, cnpj_qty_key, "stage_change_time", keys, default_per_deal=1)
+    net_revenue = subtract_by_month(sales_revenue, cancelled_revenue, keys)
+    net_contracts = subtract_by_month(paid_clients, cancelled_contracts, keys)
+    net_cnpjs = subtract_by_month(won_cnpjs, cancelled_cnpjs, keys)
 
     meetings_by_month = defaultdict(float)
     proposals_by_month = defaultdict(float)
     contract_by_month = defaultdict(float)
+    qualified_leads = defaultdict(float)
     for d in sales:
         mk = month_key(parse_dt(d.get("add_time")))
         if mk not in set(keys):
             continue
         order = stage_order(d.get("stage_id"), stage_by_id)
-        if order >= 4 or d.get("status") == "won":
+        had_meeting = order >= 4 or d.get("status") == "won"
+        cnpj_qty = numeric_field(d, cnpj_qty_key, 0)
+        try:
+            deal_value = float(d.get("value") or 0)
+        except (TypeError, ValueError):
+            deal_value = 0
+        if had_meeting:
             meetings_by_month[mk] += 1
         if order >= 5 or d.get("status") == "won":
             proposals_by_month[mk] += 1
         if order >= 8 or d.get("status") == "won":
             contract_by_month[mk] += 1
+        if deal_value > 50000 or cnpj_qty > 1 or had_meeting:
+            qualified_leads[mk] += 1
 
     conversion_by_month = {k: safe_ratio(paid_clients[k], meetings_by_month[k]) for k in keys}
+    new_business_conversion = {k: safe_ratio(paid_clients[k], new_sales_leads[k]) for k in keys}
 
     # Onboarding metrics.
     onboarding_received = count_by_month(onboarding, "add_time", keys)
@@ -305,16 +359,24 @@ def main() -> None:
             "subtitle": "Dados reais agregados do Pipedrive: venda paga, onboarding, ativação e fidelização.",
             "accent": "#ff7a1a",
             "indicators": [
-                indicator("receita-ganha", "Receita vendida paga", "currency", points(keys, sales_revenue), "Soma de negócios ganhos no Pipeline de Vendas pelo won_time."),
-                indicator("clientes-pagos", "Novos clientes pagos", "count", points(keys, paid_clients), "Quantidade de negócios ganhos no Pipeline de Vendas."),
-                indicator("taxa-ativacao", "Taxa de ativação", "percent", points(keys, activation_rate), "Ativações em onboarding divididas por clientes recebidos no mês."),
-                indicator("deals-abertos", "Negócios abertos", "count", [{"month": month_label(k), "value": sum(1 for d in deals if d.get("status") == "open") if k == current_key else 0} for k in keys], "Carteira aberta atual em todos os funis monitorados."),
+                indicator("receita-ganha", "Negócios Ganhos - Receita Ganha", "currency", points(keys, sales_revenue), "Soma de negócios ganhos no Pipeline de Vendas pelo won_time."),
+                indicator("contratos-ganhos", "Negócios Ganhos - Contratos Ganhos", "count", points(keys, paid_clients), "Quantidade de negócios ganhos no Pipeline de Vendas."),
+                indicator("cnpjs-ganhos", "Negócios Ganhos - CNPJs", "count", points(keys, won_cnpjs), "Soma do campo Quantidade de CNPJs dos negócios ganhos."),
+                indicator("receita-cancelada", "Negócios Cancelados - Receita Perdida", "currency", points(keys, cancelled_revenue), "Soma do valor dos negócios movidos para etapa Cancelado/Cancelados pelo stage_change_time."),
+                indicator("contratos-cancelados", "Negócios Cancelados - Contratos Perdidos", "count", points(keys, cancelled_contracts), "Quantidade de negócios movidos para etapa Cancelado/Cancelados."),
+                indicator("cnpjs-cancelados", "Negócios Cancelados - CNPJs", "count", points(keys, cancelled_cnpjs), "Soma do campo Quantidade de CNPJs dos negócios cancelados."),
+                indicator("receita-liquida", "Vendas Líquidas - Valor", "currency", points(keys, net_revenue), "Receita ganha menos receita perdida por cancelamentos."),
+                indicator("contratos-liquidos", "Vendas Líquidas - Contratos", "count", points(keys, net_contracts), "Contratos ganhos menos contratos cancelados."),
+                indicator("cnpjs-liquidos", "Vendas Líquidas - CNPJs", "count", points(keys, net_cnpjs), "CNPJs ganhos menos CNPJs cancelados."),
+                indicator("novos-leads", "Novos Negócios - Novos Leads", "count", points(keys, new_sales_leads), "Leads novos criados no Pipeline de Vendas."),
+                indicator("leads-qualificados", "Novos Negócios - Leads Qualificados", "count", points(keys, qualified_leads), "Leads com valor acima de R$50 mil, mais de 1 CNPJ ou reunião realizada."),
+                indicator("conversao-novos", "Novos Negócios - Percentual de Conversão", "percent", points(keys, new_business_conversion), "Negócios fechados divididos por novos leads do mês."),
             ],
             "mixTitle": "Distribuição atual por funil",
             "mix": breakdown_from_counter(overall_mix),
             "rankingTitle": "Gargalos atuais",
             "ranking": breakdown_from_counter(sales_gargalos + Counter({"Onboarding sem vínculo": unlinked})),
-            "notes": ["Snapshot estático gerado a partir da API do Pipedrive; nenhum token fica no navegador.", f"Vínculo venda→onboarding: {linked_cnpj} por CNPJ, {linked_title} por título, {unlinked} sem match."],
+            "notes": ["Todos os cards executivos mostram evolução mensal.", "Cancelamentos usam a data stage_change_time quando o negócio está em etapa Cancelado/Cancelados.", f"Vínculo venda→onboarding: {linked_cnpj} por CNPJ, {linked_title} por título, {unlinked} sem match."],
         },
         {
             "id": "vendas",

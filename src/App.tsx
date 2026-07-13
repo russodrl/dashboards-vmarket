@@ -100,13 +100,22 @@ type SourceDoc = {
 
 const commonFields = ['id', 'title', 'pipeline_id', 'stage_id', 'status', 'value', 'add_time', 'won_time', 'stage_change_time', 'user_id.name'];
 const cnpjField = 'CNPJ Principal — chave 22e8146e571b84f04631cac22a7439c3b31898fe';
+const cnpjQtyField = 'Quantidade de CNPJs — chave e0b823836d4ff5ebe397824d7f0170cd6817ec0a';
 
 const sourceDocs: Record<string, SourceDoc[]> = {
   executivo: [
-    { id: 'receita-ganha', formula: 'Soma do valor dos negócios ganhos no mês', fields: ['pipeline_id', 'status', 'won_time', 'value'], filters: ['Pipeline de Vendas: pipeline_id = 1', 'status = won', 'mês calculado pelo won_time'], logic: 'Agrupa os deals ganhos por mês de won_time e soma value. É a receita vendida/paga porque, no processo VMarket, Financeiro marca o deal como won após confirmar pagamento.' },
-    { id: 'clientes-pagos', formula: 'Quantidade de negócios ganhos no mês', fields: ['pipeline_id', 'status', 'won_time'], filters: ['Pipeline de Vendas: pipeline_id = 1', 'status = won', 'mês calculado pelo won_time'], logic: 'Conta os deals ganhos no mês. Usa a mesma fonte da receita, mas conta registros em vez de somar valor.' },
-    { id: 'taxa-ativacao', formula: 'Clientes ativados ÷ maior valor entre recebidos e ativados no mês', fields: ['pipeline_id', 'add_time', 'stage_id', 'stage_change_time'], filters: ['Onboarding: pipeline_id = 4', 'ativado quando order_nr da etapa >= 7', 'recebido quando add_time cai no mês'], logic: 'Conta ativações pela data stage_change_time em etapas avançadas de compra assistida. Como clientes de meses anteriores podem ativar agora, o denominador usa max(recebidos, ativados) para manter o indicador entre 0% e 100%.' },
-    { id: 'deals-abertos', formula: 'Quantidade atual de deals abertos', fields: ['status'], filters: ['status = open', 'todos os funis monitorados'], logic: 'Mostra a carteira aberta atual. Os meses anteriores ficam zerados porque esse indicador é um estoque atual, não uma série histórica extraída do Pipedrive.' },
+    { id: 'receita-ganha', formula: 'Soma do valor dos negócios ganhos no mês', fields: ['pipeline_id', 'status', 'won_time', 'value'], filters: ['Pipeline de Vendas: pipeline_id = 1', 'status = won', 'mês calculado pelo won_time'], logic: 'Agrupa os deals ganhos por mês de won_time e soma value. Este card foi renomeado para “Negócios Ganhos - Receita Ganha”.' },
+    { id: 'contratos-ganhos', formula: 'Quantidade de negócios ganhos no mês', fields: ['pipeline_id', 'status', 'won_time'], filters: ['Pipeline de Vendas: pipeline_id = 1', 'status = won', 'mês calculado pelo won_time'], logic: 'Conta os negócios ganhos no mês. Este card foi renomeado para “Negócios Ganhos - Contratos Ganhos”.' },
+    { id: 'cnpjs-ganhos', formula: 'Soma do campo Quantidade de CNPJs dos negócios ganhos', fields: ['pipeline_id', 'status', 'won_time', cnpjQtyField], filters: ['Pipeline de Vendas: pipeline_id = 1', 'status = won', 'mês calculado pelo won_time'], logic: 'Para cada negócio ganho, lê o campo Quantidade de CNPJs e soma por mês. Quando o campo está vazio, usa 1 como fallback para não perder o contrato.' },
+    { id: 'receita-cancelada', formula: 'Soma do valor dos negócios movidos para Cancelado/Cancelados', fields: ['stage_id', 'stage_change_time', 'value'], filters: ['nome da etapa contém “Cancelado” ou “Cancelados”', 'mês calculado pelo stage_change_time'], logic: 'Considera negócios cuja etapa atual é de cancelamento e usa stage_change_time como a data em que foram movidos para cancelado.' },
+    { id: 'contratos-cancelados', formula: 'Quantidade de negócios movidos para Cancelado/Cancelados', fields: ['stage_id', 'stage_change_time'], filters: ['nome da etapa contém “Cancelado” ou “Cancelados”', 'mês calculado pelo stage_change_time'], logic: 'Conta quantos negócios entraram em etapa de cancelamento em cada mês.' },
+    { id: 'cnpjs-cancelados', formula: 'Soma do campo Quantidade de CNPJs dos negócios cancelados', fields: ['stage_id', 'stage_change_time', cnpjQtyField], filters: ['nome da etapa contém “Cancelado” ou “Cancelados”', 'mês calculado pelo stage_change_time'], logic: 'Soma a quantidade de CNPJs dos negócios cancelados. Quando o campo está vazio, usa 1 como fallback.' },
+    { id: 'receita-liquida', formula: 'Receita ganha - receita perdida por cancelamento', fields: ['won_time', 'stage_change_time', 'value'], filters: ['ganhos no Pipeline de Vendas', 'cancelados em etapas Cancelado/Cancelados'], logic: 'Subtrai, mês a mês, o valor dos negócios cancelados do valor dos negócios ganhos.' },
+    { id: 'contratos-liquidos', formula: 'Contratos ganhos - contratos cancelados', fields: ['won_time', 'stage_change_time'], filters: ['ganhos no Pipeline de Vendas', 'cancelados em etapas Cancelado/Cancelados'], logic: 'Subtrai a quantidade de contratos cancelados da quantidade de contratos ganhos em cada mês.' },
+    { id: 'cnpjs-liquidos', formula: 'CNPJs ganhos - CNPJs cancelados', fields: [cnpjQtyField, 'won_time', 'stage_change_time'], filters: ['ganhos no Pipeline de Vendas', 'cancelados em etapas Cancelado/Cancelados'], logic: 'Subtrai os CNPJs cancelados dos CNPJs ganhos por mês.' },
+    { id: 'novos-leads', formula: 'Quantidade de leads criados no Pipeline de Vendas', fields: ['pipeline_id', 'add_time'], filters: ['Pipeline de Vendas: pipeline_id = 1', 'mês calculado pelo add_time'], logic: 'Conta todos os novos negócios/leads criados no Pipeline de Vendas.' },
+    { id: 'leads-qualificados', formula: 'Leads com valor > R$50 mil, mais de 1 CNPJ ou reunião realizada', fields: ['value', cnpjQtyField, 'stage_id', 'status', 'add_time'], filters: ['Pipeline de Vendas: pipeline_id = 1', 'value > 50000 ou Quantidade de CNPJs > 1 ou etapa de reunião/posterior'], logic: 'Classifica como qualificado quando o negócio tem potencial alto, múltiplos CNPJs ou já avançou até reunião.' },
+    { id: 'conversao-novos', formula: 'Negócios fechados ÷ novos leads', fields: ['won_time', 'add_time', 'status'], filters: ['numerador: status = won por won_time', 'denominador: leads criados por add_time'], logic: 'Mede o percentual de conversão de novos leads em negócios ganhos no mês.' },
     { id: 'mix:Distribuição atual por funil', formula: 'Contagem de deals abertos por pipeline', fields: ['pipeline_id', 'status'], filters: ['status = open', 'todos os pipelines'], logic: 'Agrupa os deals abertos pelo nome do funil, usando /pipelines para traduzir pipeline_id em nome.' },
     { id: 'ranking:Gargalos atuais', formula: 'Contagem de deals abertos em etapas comerciais avançadas + onboarding sem vínculo', fields: ['pipeline_id', 'stage_id', 'status', 'title', cnpjField], filters: ['Pipeline de Vendas: pipeline_id = 1', 'status = open', 'order_nr da etapa >= 5'], logic: 'Lista etapas comerciais abertas mais avançadas como gargalos. Também adiciona “Onboarding sem vínculo” quando um deal do onboarding não encontra venda correspondente por CNPJ nem por título normalizado.' },
   ],
@@ -144,14 +153,10 @@ const sourceDocs: Record<string, SourceDoc[]> = {
   ],
 };
 
-function SourceGuide({ dashboardId }: { dashboardId: string }) {
-  const docs = sourceDocs[dashboardId] ?? [];
-  const currentDashboard = dashboards.find((item) => item.id === dashboardId);
-  const titleFor = (doc: SourceDoc) => {
-    if (doc.id.startsWith('mix:')) return currentDashboard?.mixTitle ?? doc.id.replace('mix:', '');
-    if (doc.id.startsWith('ranking:')) return currentDashboard?.rankingTitle ?? doc.id.replace('ranking:', '');
-    return currentDashboard?.indicators.find((indicator) => indicator.id === doc.id)?.label ?? doc.id;
-  };
+function SourceGuide({ dashboardId }: { dashboardId?: string }) {
+  const sections = dashboardId
+    ? dashboards.filter((item) => item.id === dashboardId)
+    : dashboards.filter((item) => sourceDocs[item.id]?.length);
   return (
     <section className="sourceGuide">
       <div className="sourceIntro">
@@ -159,25 +164,38 @@ function SourceGuide({ dashboardId }: { dashboardId: string }) {
         <h2>Campos e lógica dos gráficos Pipedrive</h2>
         <p>Todos os gráficos abaixo usam dados agregados do snapshot seguro da API do Pipedrive. Campos-base carregados: {commonFields.join(', ')}.</p>
       </div>
-      <div className="sourceGrid">
-        {docs.map((doc) => (
-          <article className="sourceCard" key={doc.id}>
-            <span>{doc.id.includes(':') ? 'Gráfico' : 'KPI'}</span>
-            <h3>{titleFor(doc)}</h3>
-            <p><strong>Fórmula:</strong> {doc.formula}</p>
-            <p><strong>Campos:</strong> {doc.fields.join(', ')}</p>
-            <p><strong>Filtros:</strong> {doc.filters.join(' · ')}</p>
-            <p><strong>Lógica:</strong> {doc.logic}</p>
-          </article>
-        ))}
-      </div>
+      {sections.map((currentDashboard) => {
+        const docs = sourceDocs[currentDashboard.id] ?? [];
+        const titleFor = (doc: SourceDoc) => {
+          if (doc.id.startsWith('mix:')) return currentDashboard.mixTitle;
+          if (doc.id.startsWith('ranking:')) return currentDashboard.rankingTitle;
+          return currentDashboard.indicators.find((indicator) => indicator.id === doc.id)?.label ?? doc.id;
+        };
+        return (
+          <div className="sourceSection" key={currentDashboard.id}>
+            <h3>{currentDashboard.title}</h3>
+            <div className="sourceGrid">
+              {docs.map((doc) => (
+                <article className="sourceCard" key={`${currentDashboard.id}-${doc.id}`}>
+                  <span>{doc.id.includes(':') ? 'Gráfico' : 'KPI'}</span>
+                  <h3>{titleFor(doc)}</h3>
+                  <p><strong>Fórmula:</strong> {doc.formula}</p>
+                  <p><strong>Campos:</strong> {doc.fields.join(', ')}</p>
+                  <p><strong>Filtros:</strong> {doc.filters.join(' · ')}</p>
+                  <p><strong>Lógica:</strong> {doc.logic}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </section>
   );
 }
 
-
 export default function App() {
   const [active, setActive] = useState(dashboards[0].id);
+  const isExplanation = active === 'explicacoes';
   const dashboard = dashboards.find((d) => d.id === active) ?? dashboards[0];
   const schema = JSON.stringify(exportDashboardSchema(dashboards), null, 2);
 
@@ -195,24 +213,24 @@ export default function App() {
     <main>
       <header className="topbar">
         <div className="brand"><span className="logo"><BarChart3 size={22} /></span><div><strong>Dashboards VMarket</strong><small>Databox-style datawall</small></div></div>
-        <nav>{dashboards.map((d) => <button key={d.id} onClick={() => setActive(d.id)} className={d.id === active ? 'active' : ''}>{d.title}</button>)}</nav>
+        <nav>{dashboards.map((d) => <button key={d.id} onClick={() => setActive(d.id)} className={d.id === active ? 'active' : ''}>{d.title}</button>)}<button onClick={() => setActive('explicacoes')} className={isExplanation ? 'active' : ''}>Explicações</button></nav>
         <button className="download" onClick={downloadSchema}><Download size={16} /> Schema</button>
       </header>
 
-      <section className="hero" style={{ '--accent': dashboard.accent } as React.CSSProperties}>
-        <div><small>{pipedriveSnapshot.periodLabel} · snapshot Pipedrive</small><h1>{dashboard.title}</h1><p>{dashboard.subtitle}</p></div>
+      <section className="hero" style={{ '--accent': isExplanation ? '#7c3aed' : dashboard.accent } as React.CSSProperties}>
+        <div><small>{pipedriveSnapshot.periodLabel} · snapshot Pipedrive</small><h1>{isExplanation ? 'Explicações' : dashboard.title}</h1><p>{isExplanation ? 'Campos, filtros e lógica de cálculo de cada gráfico do dashboard.' : dashboard.subtitle}</p></div>
         <div className="heroBadge"><Activity size={18} /> Atualizado em {new Date(pipedriveSnapshot.generatedAt).toLocaleString('pt-BR')} · {pipedriveSnapshot.rawCounts.deals.toLocaleString('pt-BR')} deals</div>
       </section>
 
-      <section className="grid indicators">{dashboard.indicators.map((indicator) => <IndicatorCard key={indicator.id} indicator={indicator} />)}</section>
+      {isExplanation ? <SourceGuide /> : <>
+        <section className="grid indicators">{dashboard.indicators.map((indicator) => <IndicatorCard key={indicator.id} indicator={indicator} />)}</section>
 
-      <section className="grid lower">
-        <article className="panel"><h2>{dashboard.mixTitle}</h2><BubbleChart items={dashboard.mix} /></article>
-        <article className="panel"><h2>{dashboard.rankingTitle}</h2><Bars items={dashboard.ranking} /></article>
-        <article className="panel notes"><h2><CheckCircle2 size={22} /> Recomendações</h2>{dashboard.notes.map((note) => <p key={note}>{note}</p>)}</article>
-      </section>
-
-      <SourceGuide dashboardId={dashboard.id} />
+        <section className="grid lower">
+          <article className="panel"><h2>{dashboard.mixTitle}</h2><BubbleChart items={dashboard.mix} /></article>
+          <article className="panel"><h2>{dashboard.rankingTitle}</h2><Bars items={dashboard.ranking} /></article>
+          <article className="panel notes"><h2><CheckCircle2 size={22} /> Recomendações</h2>{dashboard.notes.map((note) => <p key={note}>{note}</p>)}</article>
+        </section>
+      </>}
 
     </main>
   );
