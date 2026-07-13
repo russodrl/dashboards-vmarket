@@ -98,6 +98,10 @@ def last_month_keys(anchor: date, n: int = 7) -> list[str]:
     return keys
 
 
+def current_year_month_keys(anchor: date) -> list[str]:
+    return [f"{anchor.year:04d}-{month:02d}" for month in range(1, 13)]
+
+
 def month_label(key: str) -> str:
     y, m = key.split("-")
     return f"{MONTH_LABELS[int(m) - 1]}/{y[-2:]}"
@@ -193,6 +197,13 @@ def stage_name(stage_id: Any, stage_by_id: dict[int, dict[str, Any]]) -> str:
 
 def current_value(indicator: dict[str, Any]) -> float:
     pts = indicator["points"]
+    if not pts:
+        return 0.0
+    today_key = f"{date.today().year:04d}-{date.today().month:02d}"
+    today_label = month_label(today_key)
+    for point in pts:
+        if point.get("month") == today_label:
+            return float(point.get("value") or 0)
     return float(pts[-1]["value"] if pts else 0)
 
 
@@ -220,19 +231,20 @@ def main() -> None:
     pipelines = fetch_all("/pipelines", token)
     stages = fetch_all("/stages", token)
     deals = fetch_all("/deals", token, status="all_not_deleted")
+    won_deals = fetch_all("/deals", token, status="won")
 
     stage_by_id = {int(s["id"]): s for s in stages}
     pipeline_names = {int(p["id"]): p.get("name") for p in pipelines}
 
-    # Use the current calendar month for the dashboard, but still calculate a 7-month trend.
+    # Match the Pipedrive report period "Este ano": Jan-Dec of the current year.
     anchor = date.today()
-    keys = last_month_keys(anchor)
-    current_key = keys[-1]
+    keys = current_year_month_keys(anchor)
+    current_key = f"{anchor.year:04d}-{anchor.month:02d}"
 
     sales = [d for d in deals if d.get("pipeline_id") == PIPELINES["sales"]]
     onboarding = [d for d in deals if d.get("pipeline_id") == PIPELINES["onboarding"]]
     cs = [d for d in deals if d.get("pipeline_id") == PIPELINES["cs"]]
-    won_sales = [d for d in sales if d.get("status") == "won"]
+    won_sales = [d for d in won_deals if d.get("pipeline_id") == PIPELINES["sales"]]
     cnpj_qty_key = "e0b823836d4ff5ebe397824d7f0170cd6817ec0a"
     cancelled_deals = [d for d in deals if is_cancelled_stage(d, stage_by_id)]
 
