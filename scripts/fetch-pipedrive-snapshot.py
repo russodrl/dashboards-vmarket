@@ -127,8 +127,9 @@ def last_month_keys(anchor: date, n: int = 7) -> list[str]:
 
 
 def current_year_month_keys(anchor: date) -> list[str]:
-    # Match the requested executive chart range: Jan-Aug of the current year.
-    return [f"{anchor.year:04d}-{month:02d}" for month in range(1, 9)]
+    # Dynamic chart range: Jan through the current Brazilian reporting month.
+    # In July this ends at Jul; in August it ends at Aug; etc.
+    return [f"{anchor.year:04d}-{month:02d}" for month in range(1, anchor.month + 1)]
 
 
 def month_label(key: str) -> str:
