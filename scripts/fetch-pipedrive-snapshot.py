@@ -113,7 +113,8 @@ def last_month_keys(anchor: date, n: int = 7) -> list[str]:
 
 
 def current_year_month_keys(anchor: date) -> list[str]:
-    return [f"{anchor.year:04d}-{month:02d}" for month in range(1, 13)]
+    # Match the requested executive chart range: Jan-Aug of the current year.
+    return [f"{anchor.year:04d}-{month:02d}" for month in range(1, 9)]
 
 
 def month_label(key: str) -> str:
@@ -221,8 +222,15 @@ def current_value(indicator: dict[str, Any]) -> float:
     return float(pts[-1]["value"] if pts else 0)
 
 
+def monthly_objective(text: str) -> str:
+    cleaned = text.strip().rstrip(".")
+    if cleaned.lower().endswith("no mês"):
+        return cleaned + "."
+    return cleaned + " no mês."
+
+
 def indicator(id_: str, label: str, unit: str, pts: list[dict[str, Any]], objective: str) -> dict[str, Any]:
-    return {"id": id_, "label": label, "unit": unit, "value": current_value({"points": pts}), "points": pts, "objective": objective}
+    return {"id": id_, "label": label, "unit": unit, "value": current_value({"points": pts}), "points": pts, "objective": monthly_objective(objective)}
 
 
 def breakdown_from_counter(counter: Counter[str], limit: int = 5) -> list[dict[str, Any]]:
