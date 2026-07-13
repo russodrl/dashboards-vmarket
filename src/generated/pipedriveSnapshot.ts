@@ -2,13 +2,13 @@
 import type { Dashboard } from '../data';
 
 export const pipedriveSnapshot = {
-  "generatedAt": "2026-07-13T12:57:43",
+  "generatedAt": "2026-07-13T14:41:48",
   "periodLabel": "Jul/2026",
   "source": "Pipedrive API — dados agregados",
   "rawCounts": {
-    "deals": 11183,
-    "salesDeals": 7296,
-    "onboardingDeals": 214,
+    "deals": 11188,
+    "salesDeals": 7298,
+    "onboardingDeals": 216,
     "csDeals": 1293,
     "pipelines": 7,
     "stages": 61
@@ -24,7 +24,7 @@ export const pipedriveSnapshot = {
           "id": "receita-ganha",
           "label": "Negócios Ganhos - Receita Ganha",
           "unit": "currency",
-          "value": 10883.12,
+          "value": 13080.62,
           "points": [
             {
               "month": "Jan/26",
@@ -36,11 +36,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 35702.02
+              "value": 34953.12
             },
             {
               "month": "Abr/26",
-              "value": 52852.66
+              "value": 53601.56
             },
             {
               "month": "Mai/26",
@@ -48,11 +48,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 30755.01
+              "value": 29957.11
             },
             {
               "month": "Jul/26",
-              "value": 10883.12
+              "value": 13080.62
             },
             {
               "month": "Ago/26",
@@ -81,7 +81,7 @@ export const pipedriveSnapshot = {
           "id": "contratos-ganhos",
           "label": "Negócios Ganhos - Contratos Ganhos",
           "unit": "count",
-          "value": 18.0,
+          "value": 22.0,
           "points": [
             {
               "month": "Jan/26",
@@ -93,11 +93,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 67.0
+              "value": 65.0
             },
             {
               "month": "Abr/26",
-              "value": 65.0
+              "value": 67.0
             },
             {
               "month": "Mai/26",
@@ -105,11 +105,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 55.0
+              "value": 53.0
             },
             {
               "month": "Jul/26",
-              "value": 18.0
+              "value": 22.0
             },
             {
               "month": "Ago/26",
@@ -138,7 +138,7 @@ export const pipedriveSnapshot = {
           "id": "cnpjs-ganhos",
           "label": "Negócios Ganhos - CNPJs",
           "unit": "count",
-          "value": 32.0,
+          "value": 39.0,
           "points": [
             {
               "month": "Jan/26",
@@ -150,11 +150,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 124.0
+              "value": 120.0
             },
             {
               "month": "Abr/26",
-              "value": 119.0
+              "value": 123.0
             },
             {
               "month": "Mai/26",
@@ -162,11 +162,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 85.0
+              "value": 82.0
             },
             {
               "month": "Jul/26",
-              "value": 32.0
+              "value": 39.0
             },
             {
               "month": "Ago/26",
@@ -366,7 +366,7 @@ export const pipedriveSnapshot = {
           "id": "receita-liquida",
           "label": "Vendas Líquidas - Valor",
           "unit": "currency",
-          "value": -8942.44,
+          "value": -6744.94,
           "points": [
             {
               "month": "Jan/26",
@@ -378,11 +378,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 25561.32
+              "value": 24812.42
             },
             {
               "month": "Abr/26",
-              "value": 43085.38
+              "value": 43834.28
             },
             {
               "month": "Mai/26",
@@ -390,11 +390,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 21760.86
+              "value": 20962.96
             },
             {
               "month": "Jul/26",
-              "value": -8942.44
+              "value": -6744.94
             },
             {
               "month": "Ago/26",
@@ -423,7 +423,7 @@ export const pipedriveSnapshot = {
           "id": "contratos-liquidos",
           "label": "Vendas Líquidas - Contratos",
           "unit": "count",
-          "value": -22.0,
+          "value": -18.0,
           "points": [
             {
               "month": "Jan/26",
@@ -435,11 +435,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 45.0
+              "value": 43.0
             },
             {
               "month": "Abr/26",
-              "value": 39.0
+              "value": 41.0
             },
             {
               "month": "Mai/26",
@@ -447,11 +447,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 33.0
+              "value": 31.0
             },
             {
               "month": "Jul/26",
-              "value": -22.0
+              "value": -18.0
             },
             {
               "month": "Ago/26",
@@ -480,7 +480,7 @@ export const pipedriveSnapshot = {
           "id": "cnpjs-liquidos",
           "label": "Vendas Líquidas - CNPJs",
           "unit": "count",
-          "value": -36.0,
+          "value": -29.0,
           "points": [
             {
               "month": "Jan/26",
@@ -492,11 +492,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 97.0
+              "value": 93.0
             },
             {
               "month": "Abr/26",
-              "value": 85.0
+              "value": 89.0
             },
             {
               "month": "Mai/26",
@@ -504,11 +504,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 53.0
+              "value": 50.0
             },
             {
               "month": "Jul/26",
-              "value": -36.0
+              "value": -29.0
             },
             {
               "month": "Ago/26",
@@ -537,7 +537,7 @@ export const pipedriveSnapshot = {
           "id": "novos-leads",
           "label": "Novos Negócios - Novos Leads",
           "unit": "count",
-          "value": 210.0,
+          "value": 212.0,
           "points": [
             {
               "month": "Jan/26",
@@ -565,7 +565,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jul/26",
-              "value": 210.0
+              "value": 212.0
             },
             {
               "month": "Ago/26",
@@ -594,7 +594,7 @@ export const pipedriveSnapshot = {
           "id": "leads-qualificados",
           "label": "Novos Negócios - Leads Qualificados",
           "unit": "count",
-          "value": 38.0,
+          "value": 39.0,
           "points": [
             {
               "month": "Jan/26",
@@ -622,7 +622,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jul/26",
-              "value": 38.0
+              "value": 39.0
             },
             {
               "month": "Ago/26",
@@ -651,7 +651,7 @@ export const pipedriveSnapshot = {
           "id": "conversao-novos",
           "label": "Novos Negócios - Percentual de Conversão",
           "unit": "percent",
-          "value": 8.57,
+          "value": 10.38,
           "points": [
             {
               "month": "Jan/26",
@@ -663,11 +663,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 16.75
+              "value": 16.25
             },
             {
               "month": "Abr/26",
-              "value": 17.96
+              "value": 18.51
             },
             {
               "month": "Mai/26",
@@ -675,11 +675,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 17.03
+              "value": 16.41
             },
             {
               "month": "Jul/26",
-              "value": 8.57
+              "value": 10.38
             },
             {
               "month": "Ago/26",
@@ -709,7 +709,7 @@ export const pipedriveSnapshot = {
       "mix": [
         {
           "label": "Suporte",
-          "value": 1387,
+          "value": 1388,
           "color": "#ff7a1a"
         },
         {
@@ -719,12 +719,12 @@ export const pipedriveSnapshot = {
         },
         {
           "label": "Pipeline de Vendas",
-          "value": 907,
+          "value": 902,
           "color": "#06d6a0"
         },
         {
           "label": "Onboarding",
-          "value": 173,
+          "value": 175,
           "color": "#4cc9f0"
         },
         {
@@ -737,7 +737,7 @@ export const pipedriveSnapshot = {
       "ranking": [
         {
           "label": "Feedback Proposta",
-          "value": 144,
+          "value": 145,
           "color": "#ff7a1a"
         },
         {
@@ -746,25 +746,25 @@ export const pipedriveSnapshot = {
           "color": "#ffd166"
         },
         {
-          "label": "Contrato Enviado",
+          "label": "Onboarding sem vínculo",
           "value": 19,
           "color": "#06d6a0"
         },
         {
-          "label": "Onboarding sem vínculo",
-          "value": 19,
+          "label": "Contrato Enviado",
+          "value": 18,
           "color": "#4cc9f0"
         },
         {
           "label": "Enviar Proposta",
-          "value": 18,
+          "value": 17,
           "color": "#ef476f"
         }
       ],
       "notes": [
         "Todos os cards executivos mostram evolução mensal.",
         "Cancelamentos usam a data stage_change_time quando o negócio está em etapa Cancelado/Cancelados.",
-        "Vínculo venda→onboarding: 170 por CNPJ, 25 por título, 19 sem match."
+        "Vínculo venda→onboarding: 172 por CNPJ, 25 por título, 19 sem match."
       ]
     },
     {
@@ -777,7 +777,7 @@ export const pipedriveSnapshot = {
           "id": "reunioes",
           "label": "Reuniões agendadas",
           "unit": "count",
-          "value": 38.0,
+          "value": 39.0,
           "points": [
             {
               "month": "Jan/26",
@@ -805,7 +805,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jul/26",
-              "value": 38.0
+              "value": 39.0
             },
             {
               "month": "Ago/26",
@@ -891,7 +891,7 @@ export const pipedriveSnapshot = {
           "id": "contratos-pagos",
           "label": "Contratos pagos",
           "unit": "count",
-          "value": 18.0,
+          "value": 22.0,
           "points": [
             {
               "month": "Jan/26",
@@ -903,11 +903,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 67.0
+              "value": 65.0
             },
             {
               "month": "Abr/26",
-              "value": 65.0
+              "value": 67.0
             },
             {
               "month": "Mai/26",
@@ -915,11 +915,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 55.0
+              "value": 53.0
             },
             {
               "month": "Jul/26",
-              "value": 18.0
+              "value": 22.0
             },
             {
               "month": "Ago/26",
@@ -948,7 +948,7 @@ export const pipedriveSnapshot = {
           "id": "conversao-venda",
           "label": "Conversão reunião → pago",
           "unit": "percent",
-          "value": 47.37,
+          "value": 56.41,
           "points": [
             {
               "month": "Jan/26",
@@ -960,11 +960,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Mar/26",
-              "value": 46.21
+              "value": 44.83
             },
             {
               "month": "Abr/26",
-              "value": 36.11
+              "value": 37.22
             },
             {
               "month": "Mai/26",
@@ -972,11 +972,11 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 50.0
+              "value": 48.18
             },
             {
               "month": "Jul/26",
-              "value": 47.37
+              "value": 56.41
             },
             {
               "month": "Ago/26",
@@ -1006,55 +1006,55 @@ export const pipedriveSnapshot = {
       "mix": [
         {
           "label": "Contato Feito",
-          "value": 258,
+          "value": 248,
           "color": "#ff7a1a"
         },
         {
-          "label": "Feedback Proposta",
-          "value": 144,
+          "label": "Sem Contato",
+          "value": 160,
           "color": "#ffd166"
         },
         {
-          "label": "Confirmar Apresentação",
-          "value": 136,
+          "label": "Feedback Proposta",
+          "value": 145,
           "color": "#06d6a0"
         },
         {
-          "label": "Qualificado",
-          "value": 120,
+          "label": "Confirmar Apresentação",
+          "value": 139,
           "color": "#4cc9f0"
         },
         {
-          "label": "Sem Contato",
-          "value": 104,
+          "label": "Em Negociação",
+          "value": 72,
           "color": "#ef476f"
         }
       ],
       "rankingTitle": "Ranking por vendedor — ganhos no mês",
       "ranking": [
         {
+          "label": "Bruno Diniz",
+          "value": 6,
+          "color": "#ff7a1a"
+        },
+        {
           "label": "Rodrigo Fragoso",
           "value": 5,
-          "color": "#ff7a1a"
+          "color": "#ffd166"
         },
         {
           "label": "Giuliano Palmeira",
           "value": 4,
-          "color": "#ffd166"
-        },
-        {
-          "label": "Bruno Diniz",
-          "value": 4,
           "color": "#06d6a0"
         },
         {
-          "label": "Cristiano Ferreira",
+          "label": "Gustavo Sena Mendes",
           "value": 2,
           "color": "#4cc9f0"
         },
         {
-          "label": "Gustavo Sena Mendes",
-          "value": 1,
+          "label": "Cristiano Ferreira",
+          "value": 2,
           "color": "#ef476f"
         }
       ],
@@ -1073,7 +1073,7 @@ export const pipedriveSnapshot = {
           "id": "deals-recebidos",
           "label": "Clientes recebidos",
           "unit": "count",
-          "value": 15.0,
+          "value": 17.0,
           "points": [
             {
               "month": "Jan/26",
@@ -1101,7 +1101,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jul/26",
-              "value": 15.0
+              "value": 17.0
             },
             {
               "month": "Ago/26",
@@ -1260,7 +1260,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Abr/26",
-              "value": 56.5
+              "value": 56.7
             },
             {
               "month": "Mai/26",
@@ -1268,7 +1268,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jun/26",
-              "value": 16.4
+              "value": 16.6
             },
             {
               "month": "Jul/26",
@@ -1312,12 +1312,12 @@ export const pipedriveSnapshot = {
         },
         {
           "label": "Ag. 1ª Compra",
-          "value": 24,
+          "value": 23,
           "color": "#06d6a0"
         },
         {
           "label": "Ag. 2ª Compra",
-          "value": 20,
+          "value": 21,
           "color": "#4cc9f0"
         },
         {
@@ -1330,7 +1330,7 @@ export const pipedriveSnapshot = {
       "ranking": [
         {
           "label": "Match por CNPJ",
-          "value": 170,
+          "value": 172,
           "color": "#06d6a0"
         },
         {
@@ -1359,7 +1359,7 @@ export const pipedriveSnapshot = {
           "id": "clientes-ativados",
           "label": "Clientes ativados",
           "unit": "count",
-          "value": 22.0,
+          "value": 24.0,
           "points": [
             {
               "month": "Jan/26",
@@ -1387,7 +1387,7 @@ export const pipedriveSnapshot = {
             },
             {
               "month": "Jul/26",
-              "value": 22.0
+              "value": 24.0
             },
             {
               "month": "Ago/26",
@@ -1598,17 +1598,17 @@ export const pipedriveSnapshot = {
         },
         {
           "label": "Ag. 1ª Compra",
-          "value": 24,
+          "value": 23,
           "color": "#06d6a0"
         },
         {
           "label": "Ag. 2ª Compra",
-          "value": 20,
+          "value": 21,
           "color": "#4cc9f0"
         },
         {
           "label": "Feita 3ª Compra",
-          "value": 13,
+          "value": 15,
           "color": "#ef476f"
         }
       ],
@@ -1616,17 +1616,17 @@ export const pipedriveSnapshot = {
       "ranking": [
         {
           "label": "Ag. 1ª Compra",
-          "value": 24,
+          "value": 23,
           "color": "#ff7a1a"
         },
         {
           "label": "Ag. 2ª Compra",
-          "value": 20,
+          "value": 21,
           "color": "#ffd166"
         },
         {
           "label": "Ag. 3ª Compra",
-          "value": 11,
+          "value": 9,
           "color": "#06d6a0"
         }
       ],

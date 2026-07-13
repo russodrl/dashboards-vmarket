@@ -13,7 +13,7 @@ import re
 import urllib.parse
 import urllib.request
 from collections import Counter, defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -88,6 +88,20 @@ def month_key(dt: datetime | None) -> str | None:
     return f"{dt.year:04d}-{dt.month:02d}"
 
 
+def pipedrive_report_month_key(dt: datetime | None) -> str | None:
+    """Match Pipedrive visual reports' month grouping for won_time.
+
+    The raw API timestamp can sit on the previous calendar day for deals that
+    Pipedrive's UI report groups into the next local reporting day/month.
+    A +3h adjustment reproduces the native "Ganho em / Este ano" report for
+    VMarket; e.g. Apr/2026 becomes R$ 53.601,56 and 67 deals.
+    """
+    if not dt:
+        return None
+    shifted = dt + timedelta(hours=3)
+    return f"{shifted.year:04d}-{shifted.month:02d}"
+
+
 def last_month_keys(anchor: date, n: int = 7) -> list[str]:
     y, m = anchor.year, anchor.month
     keys = []
@@ -111,11 +125,11 @@ def points(keys: list[str], values_by_month: dict[str, float]) -> list[dict[str,
     return [{"month": month_label(k), "value": round(float(values_by_month.get(k, 0)), 2)} for k in keys]
 
 
-def money_sum(deals: list[dict[str, Any]], date_field: str, keys: list[str]) -> dict[str, float]:
+def money_sum(deals: list[dict[str, Any]], date_field: str, keys: list[str], key_fn=month_key) -> dict[str, float]:
     acc = defaultdict(float)
     keyset = set(keys)
     for d in deals:
-        mk = month_key(parse_dt(d.get(date_field)))
+        mk = key_fn(parse_dt(d.get(date_field)))
         if mk in keyset:
             try:
                 acc[mk] += float(d.get("value") or 0)
@@ -124,11 +138,11 @@ def money_sum(deals: list[dict[str, Any]], date_field: str, keys: list[str]) -> 
     return acc
 
 
-def count_by_month(deals: list[dict[str, Any]], date_field: str, keys: list[str]) -> dict[str, float]:
+def count_by_month(deals: list[dict[str, Any]], date_field: str, keys: list[str], key_fn=month_key) -> dict[str, float]:
     acc = defaultdict(float)
     keyset = set(keys)
     for d in deals:
-        mk = month_key(parse_dt(d.get(date_field)))
+        mk = key_fn(parse_dt(d.get(date_field)))
         if mk in keyset:
             acc[mk] += 1
     return acc
@@ -153,11 +167,11 @@ def numeric_field(deal: dict[str, Any], key: str, default: float = 0.0) -> float
         return default
 
 
-def sum_field_by_month(deals: list[dict[str, Any]], field_key: str, date_field: str, keys: list[str], default_per_deal: float = 0.0) -> dict[str, float]:
+def sum_field_by_month(deals: list[dict[str, Any]], field_key: str, date_field: str, keys: list[str], default_per_deal: float = 0.0, key_fn=month_key) -> dict[str, float]:
     acc = defaultdict(float)
     keyset = set(keys)
     for d in deals:
-        mk = month_key(parse_dt(d.get(date_field)))
+        mk = key_fn(parse_dt(d.get(date_field)))
         if mk in keyset:
             acc[mk] += numeric_field(d, field_key, default_per_deal)
     return acc
@@ -249,9 +263,9 @@ def main() -> None:
     cancelled_deals = [d for d in deals if is_cancelled_stage(d, stage_by_id)]
 
     # Commercial metrics.
-    sales_revenue = money_sum(won_sales, "won_time", keys)
-    paid_clients = count_by_month(won_sales, "won_time", keys)
-    won_cnpjs = sum_field_by_month(won_sales, cnpj_qty_key, "won_time", keys, default_per_deal=1)
+    sales_revenue = money_sum(won_sales, "won_time", keys, key_fn=pipedrive_report_month_key)
+    paid_clients = count_by_month(won_sales, "won_time", keys, key_fn=pipedrive_report_month_key)
+    won_cnpjs = sum_field_by_month(won_sales, cnpj_qty_key, "won_time", keys, default_per_deal=1, key_fn=pipedrive_report_month_key)
     new_sales_leads = count_by_month(sales, "add_time", keys)
     cancelled_revenue = money_sum(cancelled_deals, "stage_change_time", keys)
     cancelled_contracts = count_by_month(cancelled_deals, "stage_change_time", keys)
@@ -344,7 +358,7 @@ def main() -> None:
     cs_mix = Counter(stage_name(d.get("stage_id"), stage_by_id) for d in cs if d.get("status") == "open")
     overall_mix = Counter(str(pipeline_names.get(int(d.get("pipeline_id") or 0), "Sem funil")) for d in deals if d.get("status") == "open")
 
-    current_won_sales = [d for d in won_sales if month_key(parse_dt(d.get("won_time"))) == current_key]
+    current_won_sales = [d for d in won_sales if pipedrive_report_month_key(parse_dt(d.get("won_time"))) == current_key]
     seller_ranking = Counter(owner_name(d) for d in current_won_sales)
     sales_gargalos = Counter(stage_name(d.get("stage_id"), stage_by_id) for d in sales if d.get("status") == "open" and stage_order(d.get("stage_id"), stage_by_id) >= 5)
 
