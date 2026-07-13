@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Activity, BarChart3, CheckCircle2, Download, TrendingDown, TrendingUp } from 'lucide-react';
-import { formatValue, Indicator, MonthPoint, variation } from './data';
+import { formatValue, Indicator, MonthPoint } from './data';
 import { dashboards, pipedriveSnapshot } from './generated/pipedriveSnapshot';
 import { exportDashboardSchema } from './pipedriveLinking';
 import './styles.css';
@@ -12,8 +12,15 @@ function pct(points: MonthPoint[], index: number) {
   return ((points[index].value - prev) / prev) * 100;
 }
 
+function currentMonthIndex(points: MonthPoint[]) {
+  const label = new Date().toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' }).replace('.', '').replace(' de ', '/');
+  const normalized = label.charAt(0).toUpperCase() + label.slice(1);
+  const index = points.findIndex((point) => point.month.toLowerCase() === normalized.toLowerCase());
+  return index >= 0 ? index : points.length - 1;
+}
+
 function LineChart({ indicator }: { indicator: Indicator }) {
-  const [hoverIndex, setHoverIndex] = useState(indicator.points.length - 1);
+  const [hoverIndex, setHoverIndex] = useState(currentMonthIndex(indicator.points));
   const width = 520;
   const height = 168;
   const pad = 22;
@@ -56,7 +63,7 @@ function LineChart({ indicator }: { indicator: Indicator }) {
 }
 
 function IndicatorCard({ indicator }: { indicator: Indicator }) {
-  const delta = variation(indicator.points);
+  const delta = pct(indicator.points, currentMonthIndex(indicator.points));
   const good = delta >= 0;
   return (
     <article className="indicatorCard">
