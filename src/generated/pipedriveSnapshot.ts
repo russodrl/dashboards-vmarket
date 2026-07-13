@@ -2,7 +2,7 @@
 import type { Dashboard } from '../data';
 
 export const pipedriveSnapshot = {
-  "generatedAt": "2026-07-13T12:17:11",
+  "generatedAt": "2026-07-13T12:21:56",
   "periodLabel": "Jul/2026",
   "source": "Pipedrive API — dados agregados",
   "rawCounts": {
@@ -17,7 +17,7 @@ export const pipedriveSnapshot = {
     {
       "id": "executivo",
       "title": "Executivo VMarket",
-      "subtitle": "Dados reais agregados do Pipedrive: venda paga, onboarding, ativação e fidelização.",
+      "subtitle": "Leads, Vendas, Cancelamentos, Vendas Líquidas",
       "accent": "#ff7a1a",
       "indicators": [
         {

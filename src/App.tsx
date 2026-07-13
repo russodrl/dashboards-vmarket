@@ -225,11 +225,11 @@ export default function App() {
       {isExplanation ? <SourceGuide /> : <>
         <section className="grid indicators">{dashboard.indicators.map((indicator) => <IndicatorCard key={indicator.id} indicator={indicator} />)}</section>
 
-        <section className="grid lower">
+        {dashboard.id !== 'executivo' && <section className="grid lower">
           <article className="panel"><h2>{dashboard.mixTitle}</h2><BubbleChart items={dashboard.mix} /></article>
           <article className="panel"><h2>{dashboard.rankingTitle}</h2><Bars items={dashboard.ranking} /></article>
           <article className="panel notes"><h2><CheckCircle2 size={22} /> Recomendações</h2>{dashboard.notes.map((note) => <p key={note}>{note}</p>)}</article>
-        </section>
+        </section>}
       </>}
 
     </main>

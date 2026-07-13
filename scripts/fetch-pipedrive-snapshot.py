@@ -356,7 +356,7 @@ def main() -> None:
         {
             "id": "executivo",
             "title": "Executivo VMarket",
-            "subtitle": "Dados reais agregados do Pipedrive: venda paga, onboarding, ativação e fidelização.",
+            "subtitle": "Leads, Vendas, Cancelamentos, Vendas Líquidas",
             "accent": "#ff7a1a",
             "indicators": [
                 indicator("receita-ganha", "Negócios Ganhos - Receita Ganha", "currency", points(keys, sales_revenue), "Soma de negócios ganhos no Pipeline de Vendas pelo won_time."),
