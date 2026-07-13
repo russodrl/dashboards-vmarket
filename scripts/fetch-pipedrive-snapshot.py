@@ -16,6 +16,7 @@ from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "src" / "generated" / "pipedriveSnapshot.ts"
@@ -23,6 +24,10 @@ ENV_PATHS = [Path("/opt/data/.env"), Path("/opt/data/profiles/bpo-agent-vmarket/
 
 MONTH_LABELS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
 COLORS = ["#ff7a1a", "#ffd166", "#06d6a0", "#4cc9f0", "#ef476f", "#b5179e", "#80ed99"]
+BRAZIL_TZ = ZoneInfo("America/Sao_Paulo")
+# Canonical dashboard timezone rule. Pipedrive's raw API timestamps need this
+# normalization to match the Brazilian reporting day/month shown by the UI.
+PIPEDRIVE_TO_BRAZIL_REPORT_OFFSET = timedelta(hours=3)
 
 PIPELINES = {
     "sales": 1,
@@ -82,24 +87,33 @@ def parse_dt(value: Any) -> datetime | None:
     return None
 
 
+def brazil_today() -> date:
+    return datetime.now(BRAZIL_TZ).date()
+
+
+def brazil_reporting_dt(dt: datetime | None) -> datetime | None:
+    """Normalize Pipedrive API timestamps to the dashboard's Brazilian reporting time.
+
+    All metric date/month groupings must go through this function so Pipedrive
+    records near day/month boundaries are assigned exactly like the Brazilian
+    reporting view used by VMarket.
+    """
+    if not dt:
+        return None
+    return dt + PIPEDRIVE_TO_BRAZIL_REPORT_OFFSET
+
+
 def month_key(dt: datetime | None) -> str | None:
+    dt = brazil_reporting_dt(dt)
     if not dt:
         return None
     return f"{dt.year:04d}-{dt.month:02d}"
 
 
 def pipedrive_report_month_key(dt: datetime | None) -> str | None:
-    """Match Pipedrive visual reports' month grouping for won_time.
-
-    The raw API timestamp can sit on the previous calendar day for deals that
-    Pipedrive's UI report groups into the next local reporting day/month.
-    A +3h adjustment reproduces the native "Ganho em / Este ano" report for
-    VMarket; e.g. Apr/2026 becomes R$ 53.601,56 and 67 deals.
-    """
-    if not dt:
-        return None
-    shifted = dt + timedelta(hours=3)
-    return f"{shifted.year:04d}-{shifted.month:02d}"
+    # Backwards-compatible alias: all Pipedrive report grouping now uses the
+    # canonical Brazilian reporting month.
+    return month_key(dt)
 
 
 def last_month_keys(anchor: date, n: int = 7) -> list[str]:
@@ -214,7 +228,8 @@ def current_value(indicator: dict[str, Any]) -> float:
     pts = indicator["points"]
     if not pts:
         return 0.0
-    today_key = f"{date.today().year:04d}-{date.today().month:02d}"
+    today = brazil_today()
+    today_key = f"{today.year:04d}-{today.month:02d}"
     today_label = month_label(today_key)
     for point in pts:
         if point.get("month") == today_label:
@@ -258,8 +273,8 @@ def main() -> None:
     stage_by_id = {int(s["id"]): s for s in stages}
     pipeline_names = {int(p["id"]): p.get("name") for p in pipelines}
 
-    # Match the Pipedrive report period "Este ano": Jan-Dec of the current year.
-    anchor = date.today()
+    # Use the Brazilian reporting timezone and the requested Jan-Aug chart range.
+    anchor = brazil_today()
     keys = current_year_month_keys(anchor)
     current_key = f"{anchor.year:04d}-{anchor.month:02d}"
 
@@ -271,9 +286,9 @@ def main() -> None:
     cancelled_deals = [d for d in deals if is_cancelled_stage(d, stage_by_id)]
 
     # Commercial metrics.
-    sales_revenue = money_sum(won_sales, "won_time", keys, key_fn=pipedrive_report_month_key)
-    paid_clients = count_by_month(won_sales, "won_time", keys, key_fn=pipedrive_report_month_key)
-    won_cnpjs = sum_field_by_month(won_sales, cnpj_qty_key, "won_time", keys, default_per_deal=1, key_fn=pipedrive_report_month_key)
+    sales_revenue = money_sum(won_sales, "won_time", keys)
+    paid_clients = count_by_month(won_sales, "won_time", keys)
+    won_cnpjs = sum_field_by_month(won_sales, cnpj_qty_key, "won_time", keys, default_per_deal=1)
     new_sales_leads = count_by_month(sales, "add_time", keys)
     cancelled_revenue = money_sum(cancelled_deals, "stage_change_time", keys)
     cancelled_contracts = count_by_month(cancelled_deals, "stage_change_time", keys)
@@ -366,7 +381,7 @@ def main() -> None:
     cs_mix = Counter(stage_name(d.get("stage_id"), stage_by_id) for d in cs if d.get("status") == "open")
     overall_mix = Counter(str(pipeline_names.get(int(d.get("pipeline_id") or 0), "Sem funil")) for d in deals if d.get("status") == "open")
 
-    current_won_sales = [d for d in won_sales if pipedrive_report_month_key(parse_dt(d.get("won_time"))) == current_key]
+    current_won_sales = [d for d in won_sales if month_key(parse_dt(d.get("won_time"))) == current_key]
     seller_ranking = Counter(owner_name(d) for d in current_won_sales)
     sales_gargalos = Counter(stage_name(d.get("stage_id"), stage_by_id) for d in sales if d.get("status") == "open" and stage_order(d.get("stage_id"), stage_by_id) >= 5)
 
