@@ -274,7 +274,7 @@ def main() -> None:
     stage_by_id = {int(s["id"]): s for s in stages}
     pipeline_names = {int(p["id"]): p.get("name") for p in pipelines}
 
-    # Use the Brazilian reporting timezone and the requested Jan-Aug chart range.
+    # Use the Brazilian reporting timezone and the dynamic Jan-current-month chart range.
     anchor = brazil_today()
     keys = current_year_month_keys(anchor)
     current_key = f"{anchor.year:04d}-{anchor.month:02d}"
@@ -302,10 +302,13 @@ def main() -> None:
     proposals_by_month = defaultdict(float)
     contract_by_month = defaultdict(float)
     qualified_leads = defaultdict(float)
+    won_created_sales_leads = defaultdict(float)
     for d in sales:
         mk = month_key(parse_dt(d.get("add_time")))
         if mk not in set(keys):
             continue
+        if d.get("status") == "won":
+            won_created_sales_leads[mk] += 1
         order = stage_order(d.get("stage_id"), stage_by_id)
         had_meeting = order >= 4 or d.get("status") == "won"
         cnpj_qty = numeric_field(d, cnpj_qty_key, 0)
@@ -323,7 +326,7 @@ def main() -> None:
             qualified_leads[mk] += 1
 
     conversion_by_month = {k: safe_ratio(paid_clients[k], meetings_by_month[k]) for k in keys}
-    new_business_conversion = {k: safe_ratio(paid_clients[k], new_sales_leads[k]) for k in keys}
+    new_business_conversion = {k: safe_ratio(won_created_sales_leads[k], new_sales_leads[k]) for k in keys}
 
     # Onboarding metrics.
     onboarding_received = count_by_month(onboarding, "add_time", keys)
@@ -418,9 +421,9 @@ def main() -> None:
                 indicator("receita-liquida", "Vendas Líquidas - Valor", "currency", points(keys, net_revenue), "Receita ganha menos receita perdida por cancelamentos."),
                 indicator("contratos-liquidos", "Vendas Líquidas - Contratos", "count", points(keys, net_contracts), "Contratos ganhos menos contratos cancelados."),
                 indicator("cnpjs-liquidos", "Vendas Líquidas - CNPJs", "count", points(keys, net_cnpjs), "CNPJs ganhos menos CNPJs cancelados."),
-                indicator("novos-leads", "Novos Negócios - Novos Leads", "count", points(keys, new_sales_leads), "Leads novos criados no Pipeline de Vendas."),
+                indicator("novos-leads", "Novos Negócios - Criados", "count", points(keys, new_sales_leads), "Novos negócios criados no Pipeline de Vendas."),
                 indicator("leads-qualificados", "Novos Negócios - Leads Qualificados", "count", points(keys, qualified_leads), "Leads com valor acima de R$50 mil, mais de 1 CNPJ ou reunião realizada."),
-                indicator("conversao-novos", "Novos Negócios - Percentual de Conversão", "percent", points(keys, new_business_conversion), "Negócios fechados divididos por novos leads do mês."),
+                indicator("conversao-novos", "Novos Negócios - Percentual de Conversão", "percent", points(keys, new_business_conversion), "Negócios criados no Pipeline de Vendas que estão ganhos divididos pelos negócios criados."),
             ],
             "mixTitle": "Distribuição atual por funil",
             "mix": breakdown_from_counter(overall_mix),
