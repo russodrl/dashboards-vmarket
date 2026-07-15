@@ -25,9 +25,9 @@ ENV_PATHS = [Path("/opt/data/.env"), Path("/opt/data/profiles/bpo-agent-vmarket/
 MONTH_LABELS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
 COLORS = ["#ff7a1a", "#ffd166", "#06d6a0", "#4cc9f0", "#ef476f", "#b5179e", "#80ed99"]
 BRAZIL_TZ = ZoneInfo("America/Sao_Paulo")
-# Canonical dashboard timezone rule. Pipedrive's raw API timestamps need this
-# normalization to match the Brazilian reporting day/month shown by the UI.
-PIPEDRIVE_TO_BRAZIL_REPORT_OFFSET = timedelta(hours=3)
+# Canonical dashboard timezone rule. Pipedrive API timestamps are normalized
+# to the Brazilian reporting day/month requested by VMarket.
+PIPEDRIVE_TO_BRAZIL_REPORT_OFFSET = timedelta(hours=-3)
 
 PIPELINES = {
     "sales": 1,
